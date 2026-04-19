@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Jai Shree Ram Navyuvak Samiti</title>
+
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+
+<style>
+body{
+margin:0;
+font-family:sans-serif;
+background:linear-gradient(135deg,#ffcc80,#ff8a65);
+}
+
+.header{
+background:linear-gradient(90deg,#ff6f00,#ff3d00);
+color:#fff;
+padding:15px;
+text-align:center;
+font-weight:bold;
+font-size:18px;
+letter-spacing:1px;
+}
+
+.tabs{
+display:flex;
+background:#fff;
+overflow:auto;
+box-shadow:0 2px 8px rgba(0,0,0,0.2);
+}
+
+.tabs div{
+padding:10px;
+color:#ff6f00;
+cursor:pointer;
+font-weight:bold;
+}
+
+.active{
+border-bottom:3px solid #ff3d00;
+}
+
+.cards{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:12px;
+padding:12px;
+}
+
+.card{
+background:linear-gradient(135deg,#ffffff,#fff3e0);
+border-radius:15px;
+padding:15px;
+box-shadow:0 4px 12px rgba(0,0,0,0.2);
+text-align:center;
+}
+
+.big{
+font-size:20px;
+color:#ff3d00;
+font-weight:bold;
+margin-top:5px;
+}
+
+input,select{
+width:100%;
+padding:8px;
+margin:6px 0;
+border-radius:8px;
+border:none;
+box-shadow:0 2px 5px rgba(0,0,0,0.2);
+}
+
+button{
+background:linear-gradient(90deg,#ff6f00,#ff3d00);
+color:#fff;
+border:none;
+padding:8px;
+border-radius:8px;
+margin:5px;
+font-weight:bold;
+}
+
+/* 🖼 PAGE BACKGROUNDS */
+
+.dashboard-bg{
+background:url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c') no-repeat center/cover;
+min-height:100vh;
+}
+
+.members-bg{
+background:url('https://images.unsplash.com/photo-1522202176988-66273c2fd55f') no-repeat center/cover;
+min-height:100vh;
+}
+
+.finance-bg{
+background:url('https://images.unsplash.com/photo-1567427018141-0584cfcbf1b8') no-repeat center/cover;
+min-height:100vh;
+}
+
+.settings-bg{
+background:url('https://images.unsplash.com/photo-1518770660439-4636190af475') no-repeat center/cover;
+min-height:100vh;
+}
+
+<script>
+
+let db;
+let role="viewer";
+let app;
+let isAdmin = false;
+  
+let passwords={
+admin:"123",
+adhyaksha:"111",
+upadhyaksha:"222",
+member:"333"
+};
+
+let approvals={adhyaksha:false,upadhyaksha:false,member:false};
+
+const months=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+
+const utsavList=[
+"Hanuman Janmotsav",
+"Navratri",
+"Ganesh Chaturthi",
+"Laxmi Utsav"
+];
+
+// INIT
+document.addEventListener("DOMContentLoaded",()=>{
+app = document.getElementById("app");
+firebase.initializeApp({
+apiKey:"AIzaSyCkeJUlGX7Rd42uPkDJkLqaxvHLlrvezUg",
+databaseURL:"https://samiti-app5-default-rtdb.asia-southeast1.firebasedatabase.app"
+});
+
+db=firebase.database();
+
+// load passwords
+db.ref("settings/passwords").once("value",s=>{
+if(s.val()) passwords=s.val();
+});
+
+// load approvals
+db.ref("settings/approvals").on("value",s=>{
+approvals=s.val()||approvals;
+});
+
+// 🔥 AUTO FIX OLD DATA
+fixOldData();
+
+page("dashboard");
+
+});
+
+// 🔧 AUTO DATA FIX
+function fixOldData(){
+
+["income","expense","monthly","utsav"].forEach(path=>{
+db.ref(path).once("value",snap=>{
+let data=snap.val()||{};
+Object.keys(data).forEach(k=>{
+if(data[k].locked===undefined){
+db.ref(path+"/"+k+"/locked").set(false);
+}
+});
+});
+});
+
+}
+
+// 🔄 RESET APPROVAL
+function resetApproval(){
+db.ref("settings/approvals").set({
+adhyaksha:false,
+upadhyaksha:false,
+member:false
+});
+}
+
+// 🔒 EDIT CONTROL
+function canEdit(v){
+
+// सिर्फ admin edit करेगा
+if(!isAdmin) return false;
+
+// 🔥 अगर locked field ही नहीं है → NEW DATA
+if(v?.locked === undefined) return true;
+
+// 🔥 अगर unlocked है
+if(v.locked === false) return true;
+
+// 🔒 locked → approval चाहिए
+if(
+v.locked === true &&
+approvals.adhyaksha &&
+approvals.upadhyaksha &&
+approvals.member
+){
+return true;
+}
+
+return false;
+
+}
+
+// PENALTY
+function penalty(d){
+if(!d)return 0;
+let day=new Date(d).getDate();
+return day>1?(day-1)*10:0;
+}
+
+// DASHBOARD
+function dashboard(){
+app.innerHTML="<div class='cards' id='out'></div>";
+
+db.ref().on("value",s=>{
+let d=s.val()||{};
+let sum=o=>Object.values(o||{}).reduce((a,b)=>a+(b.a||0),0);
+
+let monthly=sum(d.monthly);
+let utsav=sum(d.utsav);
+let income=sum(d.income);
+let expense=sum(d.expense);
+
+let pen=0;
+Object.values(d.monthly||{}).forEach(v=>pen+=penalty(v.d));
+
+let open=d.settings?.open||0;
+
+out.innerHTML=`
+<div class='card'>Opening<br><div class='big'>₹${open}</div></div>
+<div class='card'>Monthly<br><div class='big'>₹${monthly}</div></div>
+<div class='card'>Penalty<br><div class='big'>₹${pen}</div></div>
+<div class='card'>Utsav<br><div class='big'>₹${utsav}</div></div>
+<div class='card'>Income<br><div class='big'>₹${income}</div></div>
+<div class='card'>Expense<br><div class='big'>₹${expense}</div></div>
+<div class='card'>Balance<br><div class='big'>₹${open+monthly+pen+utsav+income-expense}</div></div>
+`;
+});
+}
+
+// MEMBERS
+function members(){
+
+app.innerHTML=`
+<h3>Add Member</h3>
+<input id="name" placeholder="Member Name">
+<input id="post" placeholder="Post">
+<button onclick="addMember()">Add Member</button>
+
+<h3>Members List</h3>
+<ul id="list"></ul>
+`;
+
+db.ref("members").on("value",s=>{
+let data=s.val()||{};
+
+list.innerHTML=Object.entries(data).map(([k,v])=>`
+<li>
+<input value="${v.name}" 
+onchange="updateMember('${k}','name',this.value)">
+
+<input value="${v.post}" 
+onchange="updateMember('${k}','post',this.value)">
+
+<button onclick="deleteMember('${k}')">❌</button>
+</li>
+`).join("");
+
+});
+
+}
+function addMember(){
+
+const n = document.getElementById("name").value.trim();
+const p = document.getElementById("post").value.trim();
+
+if(!n) return alert("Name required");
+
+db.ref("members").push({
+name:n,
+post:p
+});
+
+name.value="";
+post.value="";
+
+}
+
+function updateMember(id,field,value){
+
+if(role!=="admin"){
+return alert("Only admin can edit");
+}
+
+db.ref("members/"+id).update({
+[field]:value
+});
+
+}
+  
+function deleteMember(id){
+
+if(role!=="admin"){
+return alert("Only admin can delete");
+}
+
+if(!confirm("Delete member?")) return;
+
+db.ref("members/"+id).remove();
+
+  }
+
+// MONTHLY
+function monthly(){
+app.innerHTML=`
+<select id="month" onchange="loadMonthly()">
+${months.map(m=>`<option>${m}</option>`)}
+</select>
+<div id="list"></div>
+`;
+loadMonthly();
+}
+
+function loadMonthly(){
+db.ref("members").once("value",m=>{
+let mem=m.val()||{};
+db.ref("monthly").on("value",s=>{
+let data=s.val()||{};
+let mth=month.value;
+
+list.innerHTML=Object.entries(mem).map(([id,v])=>{
+let key=id+"_"+mth;
+let val=data[key]||{};
+
+return `
+<div>
+${v.name}
+<input value="${val.a||""}" onchange="save('${key}','a',this.value)">
+<input type="date" value="${val.d||""}" onchange="save('${key}','d',this.value)">
+Penalty ₹${penalty(val.d)}
+</div>`;
+}).join("");
+});
+});
+}
+
+function save(k,t,v){
+db.ref("monthly/"+k).once("value",snap=>{
+let val=snap.val()||{};
+
+if(!canEdit(val)){
+return alert("Locked data - approval required");
+}
+
+db.ref("monthly/"+k).update({
+[t]:t==="a"?+v:v
+});
+
+resetApproval();
+
+});
+}
+
+// UTSAV
+function utsav(){
+app.innerHTML=`
+<select id="festival">
+${utsavList.map(f=>`<option>${f}</option>`)}
+</select>
+<div id="list"></div>
+`;
+
+db.ref("members").once("value",m=>{
+let mem=m.val()||{};
+
+db.ref("utsav").on("value",s=>{
+let data=s.val()||{};
+
+list.innerHTML=Object.entries(mem).map(([id,v])=>{
+let key=id+"_"+festival.value;
+let val=data[key]||{};
+
+return `
+<div>
+${v.name}
+<input value="${val.a||""}" onchange="saveU('${key}',this.value)">
+</div>`;
+}).join("");
+});
+});
+}
+
+function saveU(k,v){
+db.ref("utsav/"+k).once("value",snap=>{
+let val=snap.val()||{};
+
+if(!canEdit(val)){
+return alert("Locked data - approval required");
+}
+
+db.ref("utsav/"+k).update({
+a:+v
+});
+
+resetApproval();
+
+});
+}
+
+// DELETE
+function del(id,path){
+db.ref(path+"/"+id).once("value",snap=>{
+let val=snap.val()||{};
+
+if(!canEdit(val)){
+return alert("Locked data - approval required");
+}
+
+db.ref(path+"/"+id).remove();
+resetApproval();
+});
+}
+
+// INCOME
+function income(){
+app.innerHTML=`
+<input id="d" placeholder="Description"><input id="a">
+<button onclick="addInc()">Add</button>
+<ul id="list"></ul>
+`;
+
+db.ref("income").on("value",s=>{
+list.innerHTML=Object.entries(s.val()||{}).map(([k,v])=>
+`<li>${v.d} ₹${v.a}
+<button onclick="del('${k}','income')">❌</button>
+</li>`
+).join("");
+});
+}
+
+function addInc(){
+db.ref("income").push({d:d.value,a:+a.value,locked:false});
+}
+
+// EXPENSE
+function expense(){
+app.innerHTML=`
+<input id="d" placeholder="Description"><input id="a">
+<button onclick="addExp()">Add</button>
+<ul id="list"></ul>
+`;
+
+db.ref("expense").on("value",s=>{
+list.innerHTML=Object.entries(s.val()||{}).map(([k,v])=>
+`<li>${v.d} ₹${v.a}
+<button onclick="del('${k}','expense')">❌</button>
+</li>`
+).join("");
+});
+}
+
+function addExp(){
+db.ref("expense").push({d:d.value,a:+a.value,locked:false});
+}
+
+// SETTINGS
+function settings(){
+app.innerHTML=`
+<input id="pass">
+<select id="roleSelect">
+<option>admin</option>
+<option>adhyaksha</option>
+<option>upadhyaksha</option>
+<option>member</option>
+</select>
+<button onclick="login()">Login</button>
+
+<h3>Password</h3>
+<input id="newPass">
+<button onclick="changePass()">Update</button>
+
+<h3>Opening Balance</h3>
+<input id="openAmt" type="number">
+<button onclick="saveOpen()">Save</button>
+
+<h3>Lock / Approval</h3>
+<button onclick="lockData()">🔒 Lock</button>
+<button onclick="approve()">✅ Approve</button>
+
+Adhyaksha: ${approvals.adhyaksha?"✔":"❌"}<br>
+Upadhyaksha: ${approvals.upadhyaksha?"✔":"❌"}<br>
+Member: ${approvals.member?"✔":"❌"}
+`;
+}
+
+function login(){
+let r=roleSelect.value;
+
+if(pass.value===passwords[r]){
+role=r;
+isAdmin = (r==="admin");
+alert(r+" login");
+}else alert("Wrong");
+}
+
+function changePass(){
+passwords[role]=newPass.value;
+db.ref("settings/passwords/"+role).set(newPass.value);
+alert("Updated");
+}
+
+function saveOpen(){
+db.ref("settings/open").set(+openAmt.value);
+}
+
+// LOCK
+function lockData(){
+if(role!=="admin") return alert("Admin only");
+
+["monthly","income","expense","utsav"].forEach(p=>{
+db.ref(p).once("value",s=>{
+Object.keys(s.val()||{}).forEach(k=>{
+db.ref(p+"/"+k+"/locked").set(true);
+});
+});
+});
+
+alert("Locked");
+}
+
+// APPROVE
+function approve(){
+if(role==="admin") return alert("Admin not allowed");
+db.ref("settings/approvals/"+role).set(true);
+alert("Approved");
+}
+
+// ROUTE
+function page(e,p){
+
+document.querySelectorAll('.tabs div').forEach(el=>el.classList.remove('active'));
+
+e.target.classList.add('active');
+
+if(p==="dashboard") dashboard();
+if(p==="members") members();
+if(p==="monthly") monthly();
+if(p==="utsav") utsav();
+if(p==="income") income();
+if(p==="expense") expense();
+if(p==="settings") settings();
+
+}
+</script>
+
+</body>
+</html>
