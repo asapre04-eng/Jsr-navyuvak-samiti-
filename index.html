@@ -163,7 +163,8 @@ let monthly=sum(d.monthly);
 let utsav=sum(d.utsav);
 let income=sum(d.income);
 let expense=sum(d.expense);
-  let pen=0;
+
+let pen=0;
 Object.values(d.monthly||{}).forEach(v=>pen+=penalty(v.d));
   
 let open=d.settings?.open||0;
