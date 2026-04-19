@@ -108,6 +108,7 @@ border:1px solid #ddd;
 }
 /* 🔥 LOADER CSS START */
 #loader{
+#loader{
 position:fixed;
 top:0;
 left:0;
@@ -119,34 +120,41 @@ flex-direction:column;
 align-items:center;
 justify-content:center;
 z-index:9999;
-overflow:hidden;
 }
 
-.sky{
-position:relative;
-width:100%;
-height:150px;
-overflow:hidden;
-}
-
+/* 🔥 Hanuman Animation (circle flying) */
 .hanuman{
+width:40px;
+height:40px;
+background:#fff;
+border-radius:50%;
 position:absolute;
-width:80px;
-top:40px;
-left:-100px;
-animation:fly 3s linear infinite;
+animation:fly 2s linear infinite;
 }
 
+/* 🔥 Tail */
+.hanuman::after{
+content:"";
+position:absolute;
+width:30px;
+height:6px;
+background:#ffd54f;
+top:17px;
+left:-30px;
+border-radius:10px;
+}
+
+/* 🔥 Animation */
 @keyframes fly{
-0%{left:-120px;}
-100%{left:110%;}
+0%{transform:translateX(-120px);}
+100%{transform:translateX(120px);}
 }
 
 .loading-text{
-margin-top:20px;
+margin-top:80px;
+color:#fff;
 font-size:18px;
 font-weight:bold;
-color:#fff;
 }
 /* 🔥 LOADER CSS END */
 
@@ -165,16 +173,7 @@ margin-top:5px;
 <body>
 <!-- 🔥 LOADER START -->
 <div id="loader">
-  <div class="sky">
-    <div class="hanuman-wrap">
-      <div class="hanuman-body"></div>
-      <div class="gada"></div>
-      <div class="trail"></div>
-    </div>
-    <div class="cloud c1"></div>
-    <div class="cloud c2"></div>
-    <div class="cloud c3"></div>
-  </div>
+  <div class="hanuman"></div>
   <div class="loading-text">🚩 Jai Shree Ram...</div>
 </div>
 <!-- 🔥 LOADER END -->
