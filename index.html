@@ -149,11 +149,7 @@ return day>1?(day-1)*10:0;
 
 // DASHBOARD
 function dashboard(){
-app.innerHTML=`
-<div class="page dashboard-bg">
-<div class="cards" id="out"></div>
-</div>
-`;
+app.innerHTML="<div class='cards' id='out'></div>";
 
 db.ref().on("value",s=>{
 let d=s.val()||{};
@@ -166,20 +162,21 @@ let expense=sum(d.expense);
 
 let pen=0;
 Object.values(d.monthly||{}).forEach(v=>pen+=penalty(v.d));
-  
+
 let open=d.settings?.open||0;
 
 out.innerHTML=`
-<div class='card'>💰 Opening<div class='big'>₹${open}</div></div>
-<div class='card'>📅 Monthly<div class='big'>₹${monthly}</div></div>
-<div class='card'>🧾Penalty<div class='big'>₹${penalty}</div></div>
-<div class='card'>🎉 Utsav<div class='big'>₹${utsav}</div></div>
-<div class='card'>📥 Income<div class='big'>₹${income}</div></div>
-<div class='card'>📤 Expense<div class='big'>₹${expense}</div></div>
-<div class='card'>🏦 Balance<div class='big'>₹${open+monthly+utsav+income-expense}</div></div>
+<div class='card'>Opening<br><div class='big'>₹${open}</div></div>
+<div class='card'>Monthly<br><div class='big'>₹${monthly}</div></div>
+<div class='card'>Penalty<br><div class='big'>₹${pen}</div></div>
+<div class='card'>Utsav<br><div class='big'>₹${utsav}</div></div>
+<div class='card'>Income<br><div class='big'>₹${income}</div></div>
+<div class='card'>Expense<br><div class='big'>₹${expense}</div></div>
+<div class='card'>Balance<br><div class='big'>₹${open+monthly+pen+utsav+income-expense}</div></div>
 `;
 });
 }
+
 
 // MEMBERS
 function members(){
