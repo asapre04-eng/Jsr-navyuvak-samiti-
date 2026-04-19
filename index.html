@@ -166,13 +166,13 @@ Object.values(d.monthly||{}).forEach(v=>pen+=penalty(v.d));
 let open=d.settings?.open||0;
 
 out.innerHTML=`
-<div class='card'>Opening<br><div class='big'>₹${open}</div></div>
-<div class='card'>Monthly<br><div class='big'>₹${monthly}</div></div>
-<div class='card'>Penalty<br><div class='big'>₹${pen}</div></div>
-<div class='card'>Utsav<br><div class='big'>₹${utsav}</div></div>
-<div class='card'>Income<br><div class='big'>₹${income}</div></div>
-<div class='card'>Expense<br><div class='big'>₹${expense}</div></div>
-<div class='card'>Balance<br><div class='big'>₹${open+monthly+pen+utsav+income-expense}</div></div>
+<div class='card'>💰 Opening<br><div class='big'>₹${open}</div></div>
+<div class='card'>🗓️ Monthly<br><div class='big'>₹${monthly}</div></div>
+<div class='card'>🧾 Penalty<br><div class='big'>₹${pen}</div></div>
+<div class='card'>🎊 Utsav<br><div class='big'>₹${utsav}</div></div>
+<div class='card'>📥 Income<br><div class='big'>₹${income}</div></div>
+<div class='card'>📤 Expense<br><div class='big'>₹${expense}</div></div>
+<div class='card'>🏦 Balance<br><div class='big'>₹${open+monthly+pen+utsav+income-expense}</div></div>
 `;
 });
 }
