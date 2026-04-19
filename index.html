@@ -10,107 +10,111 @@
 <style>
 body{
 margin:0;
-font-family:sans-serif;
-color:#fff;
+font-family:system-ui;
+background:#f5e6d3;
 }
 
 /* HEADER */
 .header{
-background:rgba(0,0,0,0.7);
-backdrop-filter:blur(10px);
+background:#ff6f00;
 color:#fff;
-padding:15px;
-text-align:center;
+padding:18px;
+font-size:18px;
 font-weight:bold;
-letter-spacing:1px;
+}
+
+.sub{
+font-size:12px;
+opacity:0.8;
 }
 
 /* TABS */
 .tabs{
 display:flex;
+background:#ff6f00;
 overflow:auto;
-background:rgba(0,0,0,0.5);
-backdrop-filter:blur(8px);
 }
 
 .tabs div{
-padding:10px;
-cursor:pointer;
+padding:12px;
 color:#fff;
+font-size:14px;
+cursor:pointer;
 white-space:nowrap;
 }
 
 .active{
-border-bottom:3px solid #ffd54f;
+background:#fff;
+color:#ff6f00;
+border-radius:10px 10px 0 0;
 }
 
-/* PAGE WRAPPER */
-.page{
-min-height:100vh;
-padding:10px;
-background-size:cover;
-background-position:center;
+/* DASHBOARD TITLE */
+.title{
+padding:12px;
+font-weight:bold;
+color:#444;
 }
 
-/* GLASS CARD */
-.card{
-background:rgba(255,255,255,0.15);
-backdrop-filter:blur(15px);
-border-radius:15px;
-padding:15px;
-box-shadow:0 4px 20px rgba(0,0,0,0.4);
-margin:8px 0;
-}
-
+/* CARDS GRID */
 .cards{
 display:grid;
 grid-template-columns:1fr 1fr;
-gap:10px;
+gap:12px;
+padding:12px;
 }
 
+/* CARD */
+.card{
+background:#fff;
+border-radius:16px;
+padding:15px;
+box-shadow:0 4px 10px rgba(0,0,0,0.1);
+position:relative;
+overflow:hidden;
+}
+
+/* LEFT COLOR BORDER */
+.card::before{
+content:"";
+position:absolute;
+left:0;
+top:0;
+height:100%;
+width:5px;
+background:#ff6f00;
+border-radius:10px 0 0 10px;
+}
+
+/* VALUE */
 .big{
 font-size:20px;
 font-weight:bold;
-color:#ffd54f;
-margin-top:5px;
+color:#ff6f00;
+margin-top:8px;
 }
+
+/* GREEN CARD */
+.green::before{background:#2e7d32;}
+.green .big{color:#2e7d32;}
 
 /* INPUT */
 input,select{
 width:100%;
 padding:8px;
-margin:5px 0;
+margin:6px 0;
 border-radius:10px;
-border:none;
-background:rgba(255,255,255,0.8);
+border:1px solid #ddd;
 }
 
 /* BUTTON */
 button{
-background:linear-gradient(45deg,#ff6f00,#ff3d00);
+background:#ff6f00;
 color:#fff;
 border:none;
 padding:8px;
-border-radius:10px;
-margin:5px 0;
-font-weight:bold;
-}
-
-/* BACKGROUNDS */
-.dashboard-bg{
-background:url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c');
-}
-
-.members-bg{
-background:url('https://images.unsplash.com/photo-1522202176988-66273c2fd55f');
-}
-
-.finance-bg{
-background:url('https://images.unsplash.com/photo-1567427018141-0584cfcbf1b8');
-}
-
-.settings-bg{
-background:url('https://images.unsplash.com/photo-1518770660439-4636190af475');
+border-radius:8px;
+margin-top:5px;
 }
 </style>
 </head>
