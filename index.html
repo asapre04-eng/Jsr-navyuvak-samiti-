@@ -214,6 +214,10 @@ const utsavList=[
 
 // INIT
 document.addEventListener("DOMContentLoaded",()=>{
+  // 🔥 LOADER HIDE AFTER DATA LOAD
+db.ref().once("value",()=>{
+document.getElementById("loader").style.display="none";
+});
 app = document.getElementById("app");
 firebase.initializeApp({
 apiKey:"AIzaSyCkeJUlGX7Rd42uPkDJkLqaxvHLlrvezUg",
