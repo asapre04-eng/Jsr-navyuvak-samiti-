@@ -214,10 +214,6 @@ const utsavList=[
 
 // INIT
 document.addEventListener("DOMContentLoaded",()=>{
-  // 🔥 LOADER HIDE AFTER DATA LOAD
-db.ref().once("value",()=>{
-document.getElementById("loader").style.display="none";
-});
 app = document.getElementById("app");
 firebase.initializeApp({
 apiKey:"AIzaSyCkeJUlGX7Rd42uPkDJkLqaxvHLlrvezUg",
@@ -225,6 +221,10 @@ databaseURL:"https://samiti-app5-default-rtdb.asia-southeast1.firebasedatabase.a
 });
 
 db=firebase.database();
+  // 🔥 LOADER HIDE AFTER DATA LOAD
+db.ref().once("value",()=>{
+document.getElementById("loader").style.display="none";
+});
 
 // load passwords
 db.ref("settings/passwords").once("value",s=>{
