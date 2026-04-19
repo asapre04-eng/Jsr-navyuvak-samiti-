@@ -8,16 +8,110 @@
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
 
 <style>
-body{margin:0;font-family:sans-serif;background:#f3e6d3}
-.header{background:#ff6f00;color:#fff;padding:15px;text-align:center;font-weight:bold}
-.tabs{display:flex;background:#fff;overflow:auto}
-.tabs div{padding:10px;color:#ff6f00;cursor:pointer}
-.active{border-bottom:3px solid #ff6f00}
-.cards{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:10px}
-.card{background:#fff;border-radius:12px;padding:12px;box-shadow:0 2px 6px #ccc}
-.big{font-size:18px;color:#ff6f00;font-weight:bold}
-input,select{width:100%;padding:6px;margin:5px 0}
-button{background:#ff6f00;color:#fff;border:none;padding:6px;border-radius:5px;margin:3px}
+body{
+margin:0;
+font-family:sans-serif;
+color:#fff;
+}
+
+/* HEADER */
+.header{
+background:rgba(0,0,0,0.7);
+backdrop-filter:blur(10px);
+color:#fff;
+padding:15px;
+text-align:center;
+font-weight:bold;
+letter-spacing:1px;
+}
+
+/* TABS */
+.tabs{
+display:flex;
+overflow:auto;
+background:rgba(0,0,0,0.5);
+backdrop-filter:blur(8px);
+}
+
+.tabs div{
+padding:10px;
+cursor:pointer;
+color:#fff;
+white-space:nowrap;
+}
+
+.active{
+border-bottom:3px solid #ffd54f;
+}
+
+/* PAGE WRAPPER */
+.page{
+min-height:100vh;
+padding:10px;
+background-size:cover;
+background-position:center;
+}
+
+/* GLASS CARD */
+.card{
+background:rgba(255,255,255,0.15);
+backdrop-filter:blur(15px);
+border-radius:15px;
+padding:15px;
+box-shadow:0 4px 20px rgba(0,0,0,0.4);
+margin:8px 0;
+}
+
+.cards{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:10px;
+}
+
+.big{
+font-size:20px;
+font-weight:bold;
+color:#ffd54f;
+margin-top:5px;
+}
+
+/* INPUT */
+input,select{
+width:100%;
+padding:8px;
+margin:5px 0;
+border-radius:10px;
+border:none;
+background:rgba(255,255,255,0.8);
+}
+
+/* BUTTON */
+button{
+background:linear-gradient(45deg,#ff6f00,#ff3d00);
+color:#fff;
+border:none;
+padding:8px;
+border-radius:10px;
+margin:5px 0;
+font-weight:bold;
+}
+
+/* BACKGROUNDS */
+.dashboard-bg{
+background:url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c');
+}
+
+.members-bg{
+background:url('https://images.unsplash.com/photo-1522202176988-66273c2fd55f');
+}
+
+.finance-bg{
+background:url('https://images.unsplash.com/photo-1567427018141-0584cfcbf1b8');
+}
+
+.settings-bg{
+background:url('https://images.unsplash.com/photo-1518770660439-4636190af475');
+}
 </style>
 </head>
 
