@@ -415,8 +415,10 @@ app.innerHTML=`
 db.ref("members").on("value",s=>{
 let data=s.val()||{};
 
-list.innerHTML=Object.entries(data).map(([k,v])=>`
+list.innerHTML = Object.entries(data).map(([k,v],i)=>`
 <li>
+<b>${i+1}.</b>
+
 <input value="${v.name}" 
 onchange="updateMember('${k}','name',this.value)">
 
