@@ -113,35 +113,7 @@ top:0;
 left:0;
 width:100%;
 height:100%;
-background:linear-gradient(#ff9800,#ff5722);
-display:flex;
-flex-direction:column;
-align-items:center;
-justify-content:center;
-z-index:9999;
-}
-
-/* GIF SIZE */
-#hanumanGif{
-width:140px;
-max-width:80%;
-margin-bottom:15px;
-}
-
-/* TEXT */
-.loading-text{
-font-size:18px;
-font-weight:bold;
-color:#fff;
-letter-spacing:1px;
-}
-display:flex;
-flex-direction:column;
-align-items:center;
-justify-content:center;
-z-index:9999;
-overflow:hidden;
-}
+background:#000;
 display:flex;
 flex-direction:column;
 align-items:center;
@@ -150,19 +122,44 @@ z-index:9999;
 overflow:hidden;
 }
 
-/* GIF SIZE */
-#hanumanGif{
-width:140px;
-max-width:80%;
-margin-bottom:15px;
+/* 🔥 BACKGROUND BLUR */
+.bg{
+position:absolute;
+width:100%;
+height:100%;
+background:url('images/header.jpg') no-repeat center/cover;
+filter:blur(8px) brightness(0.6);
+}
+
+/* 🔥 FLAG IMAGE */
+#flag{
+width:260px;
+z-index:2;
+
+/* 🌬️ WAVE EFFECT */
+animation:wave 2.5s ease-in-out infinite;
+
+/* depth */
+filter:drop-shadow(0 0 25px rgba(255,140,0,0.7));
+}
+
+/* 🔥 WAVE ANIMATION */
+@keyframes wave{
+0%{transform:rotate(0deg) scale(1);}
+25%{transform:rotate(1deg) scale(1.02);}
+50%{transform:rotate(-1deg) scale(1.03);}
+75%{transform:rotate(1deg) scale(1.02);}
+100%{transform:rotate(0deg) scale(1);}
 }
 
 /* TEXT */
-.loading-text{
+.text{
+margin-top:15px;
+color:#ffd54f;
 font-size:18px;
 font-weight:bold;
-color:#fff;
-letter-spacing:1px;
+z-index:2;
+text-shadow:0 0 10px orange;
 }
 /* 🔥 LOADER CSS END */
 
@@ -181,10 +178,13 @@ margin-top:5px;
 <body>
 <!-- 🔥 LOADER START -->
 <div id="loader">
-  <img src="https://img.sanishtech.com/u/ca67d62cffd3a640379318d44fb61f99.gif" alt="1000193730" loading="lazy" style="max-width:100%;height:auto;">
-  </div>
-   <!-- 🔊 SOUND -->
-  <audio id="bgSound" src="audio/4axu9-uu395.mp3"></audio>
+
+  <div class="bg"></div>
+
+  <img src="https://img.sanishtech.com/u/ccf36410e7a56392bf5deaca6cbceb91.png" alt="1000193746" loading="lazy" style="max-width:100%;height:auto;">
+
+  <div class="text">🚩 Jai Shree Ram 🚩</div>
+
 </div>
 <!-- 🔥 LOADER END -->
 
