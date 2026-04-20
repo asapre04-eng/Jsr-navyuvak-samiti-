@@ -492,17 +492,23 @@ db.ref("monthly").on("value",s=>{
 let data=s.val()||{};
 let mth=month.value;
 
-list.innerHTML=Object.entries(mem).map(([id,v])=>{
-let key=id+"_"+mth;
-let val=data[key]||{};
+list.innerHTML = Object.entries(mem).map(([id,v],i)=>{
+let key = id+"_"+mth;
+let val = data[key]||{};
 
 return `
 <div>
-${v.name}
-<input value="${val.a||""}" onchange="save('${key}','a',this.value)">
-<input type="date" value="${val.d||""}" onchange="save('${key}','d',this.value)">
+<b>${i+1}.</b> ${v.name}
+
+<input value="${val.a||""}" 
+onchange="save('${key}','a',this.value)">
+
+<input type="date" value="${val.d||""}" 
+onchange="save('${key}','d',this.value)">
+
 Penalty ₹${penalty(val.d)}
-</div>`;
+</div>
+`;
 }).join("");
 });
 });
