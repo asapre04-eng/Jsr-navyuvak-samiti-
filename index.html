@@ -434,8 +434,11 @@ onchange="updateMember('${k}','post',this.value)">
 }
 function addMember(){
 
-const n = document.getElementById("name").value.trim();
-const p = document.getElementById("post").value.trim();
+const nameInput = document.getElementById("name");
+const postInput = document.getElementById("post");
+
+const n = nameInput.value.trim();
+const p = postInput.value.trim();
 
 if(!n) return alert("Name required");
 
@@ -444,9 +447,10 @@ name:n,
 post:p
 });
 
-name.value="";
-post.value="";
-
+/* 🔥 only name clear */
+nameInput.value = "";
+nameInput.focus();
+/* ❌ post ko mat chhedo */
 }
 
 
