@@ -31,13 +31,23 @@ display:block;
 
 .header-text{
 position:absolute;
-top:50%;
+top:65%;   /* 🔥 थोड़ा नीचे shift (image के हिसाब से perfect) */
 left:50%;
-transform:translate(-50%,-50%);
+transform:translateX(-50%);
+
 color:#fff;
 font-size:18px;
 font-weight:bold;
-text-shadow:0 0 10px orange;
+text-align:center;
+z-index:2;
+
+/* 🔥 single line */
+white-space:nowrap;
+
+/* glow */
+text-shadow:
+0 0 8px #ff9800,
+0 0 15px #ff5722;
 }
 .sub{
 font-size:12px;
