@@ -16,18 +16,27 @@ background:#f5e6d3;
 
 /* HEADER */
 .header{
-height:280px;
-}
+width:100%;
+position:relative;
 
+/* 🔥 ये हटाओ */
+height:auto;
+}
 .header-img{
-object-fit:cover;
-object-position:center 10%;
+width:100%;
+height:auto;   /* 🔥 full image */
+display:block;
 }
 .header-text{
 position:absolute;
-top:30%;   /* 🔥 थोड़ा नीचे shift (image के हिसाब से perfect) */
+bottom:15px;   /* 🔥 नीचे fix */
 left:50%;
 transform:translateX(-50%);
+white-space:nowrap;
+color:#fff;
+font-weight:bold;
+z-index:2;
+}
 
 color:#fff;
 font-size:18px;
