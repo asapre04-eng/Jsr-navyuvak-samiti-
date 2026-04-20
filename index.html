@@ -433,6 +433,10 @@ onchange="updateMember('${k}','post',this.value)">
 
 }
 function addMember(){
+  
+if(role !== "admin"){
+return alert("Only admin can add member");
+}
 
 const nameInput = document.getElementById("name");
 const postInput = document.getElementById("post");
