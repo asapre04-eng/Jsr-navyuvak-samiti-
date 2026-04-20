@@ -107,7 +107,6 @@ border-radius:10px;
 border:1px solid #ddd;
 }
 /* 🔥 LOADER CSS START */
-
 #loader{
 position:fixed;
 top:0;
@@ -122,39 +121,19 @@ justify-content:center;
 z-index:9999;
 }
 
-/* 🔥 Hanuman Animation (circle flying) */
-.hanuman{
-width:40px;
-height:40px;
-background:#fff;
-border-radius:50%;
-position:absolute;
-animation:fly 2s linear infinite;
+/* GIF SIZE */
+#hanumanGif{
+width:140px;
+max-width:80%;
+margin-bottom:15px;
 }
 
-/* 🔥 Tail */
-.hanuman::after{
-content:"";
-position:absolute;
-width:30px;
-height:6px;
-background:#ffd54f;
-top:17px;
-left:-30px;
-border-radius:10px;
-}
-
-/* 🔥 Animation */
-@keyframes fly{
-0%{transform:translateX(-120px);}
-100%{transform:translateX(120px);}
-}
-
+/* TEXT */
 .loading-text{
-margin-top:80px;
-color:#fff;
 font-size:18px;
 font-weight:bold;
+color:#fff;
+letter-spacing:1px;
 }
 /* 🔥 LOADER CSS END */
 
