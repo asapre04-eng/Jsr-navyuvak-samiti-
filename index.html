@@ -111,17 +111,18 @@ border:1px solid #ddd;
 position:fixed;
 top:0;
 left:0;
-width:100%;
-height:100%;
+width:100vw;
+height:100vh;
 
-/* 🔥 SAME IMAGE BACKGROUND */
-background:url('https://img.sanishtech.com/u/ef0c43030bf61423f6cb08ff58f11647.png') no-repeat center/cover;
+/* 🔥 PURE BHAGWA GRADIENT */
+background:linear-gradient(135deg,#ff9933,#ff5722);
 
 display:flex;
 flex-direction:column;
 align-items:center;
 justify-content:center;
-z-index:9999;
+
+z-index:999999;
 overflow:hidden;
 }
 #loader::before{
@@ -129,14 +130,7 @@ content:"";
 position:absolute;
 width:100%;
 height:100%;
-
-/* 🔥 SOFT ORANGE + DARK MIX */
-background:linear-gradient(
-rgba(0,0,0,0.4),
-rgba(255,120,0,0.3)
-);
-
-z-index:1;
+background:radial-gradient(circle at center, rgba(255,255,255,0.1), transparent 70%);
 }
 /* 🔥 BACKGROUND BLUR */
 .bg{
