@@ -18,11 +18,18 @@ background:#f5e6d3;
 .header{
 position:relative;
 width:100%;
-height:140px; /* 🔥 fixed height */
+height:140px;
 overflow:hidden;
+
+/* 🔥 FORCE REMOVE OLD STYLE */
+background:none !important;
+padding:0 !important;
+margin:0 !important;
+box-shadow:none !important;
+border-radius:0 !important;
 }
 
-/* 🔥 IMAGE FULL FIT */
+/* IMAGE */
 .header-img{
 width:100%;
 height:100%;
@@ -30,33 +37,18 @@ object-fit:cover;
 display:block;
 }
 
-/* 🔥 DARK OVERLAY (SOFT) */
-.header::after{
-content:"";
-position:absolute;
-top:0;
-left:0;
-width:100%;
-height:100%;
-background:rgba(0,0,0,0.3);
-}
-
-/* 🔥 TEXT CENTER */
+/* TEXT */
 .header-text{
 position:absolute;
 top:50%;
 left:50%;
 transform:translate(-50%,-50%);
 color:#fff;
-font-size:18px;
+font-size:16px;
 font-weight:bold;
-text-align:center;
 z-index:2;
-
-/* glow */
-text-shadow:
-0 0 8px #ff9800,
-0 0 15px #ff5722;
+text-align:center;
+text-shadow:0 0 10px orange;
 }
 .sub{
 font-size:12px;
