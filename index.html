@@ -18,15 +18,18 @@ background:#f5e6d3;
 /* 🔥 HEADER FIX */
 .header{
 width:100%;
-margin:0;
-padding:0;
+max-height:220px;   /* 🔥 height control */
+overflow:hidden;
 }
 
 /* 🔥 IMAGE FULL SHOW (NO CUT) */
 .header-img{
 width:100%;
-height:auto;   /* 🔥 important */
+height:auto;
 display:block;
+
+/* 🔥 center crop feel (optional) */
+object-position:center;
 }
 
 .header-text{
