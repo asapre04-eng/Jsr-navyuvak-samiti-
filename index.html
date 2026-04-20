@@ -432,18 +432,18 @@ onchange="updateMember('${k}','post',this.value)">
 }
 function addMember(){
 
-const n = document.getElementById("name").value.trim();
 const p = document.getElementById("post").value.trim();
-
+const n = document.getElementById("name").value.trim();
+  
 if(!n) return alert("Name required");
 
 db.ref("members").push({
-name:n,
 post:p
+name:n,
 });
 
-name.value="";
 post.value="";
+name.value="";
 
 }
 
