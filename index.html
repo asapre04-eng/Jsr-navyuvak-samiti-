@@ -605,14 +605,14 @@ resetApproval();
 
 // DELETE
 function del(id,path){
-db.ref(path+"/"+id).once("value",snap=>{
+db.ref("data/"+year+"/"+path+"/"+id).once("value",snap=>{
 let val=snap.val()||{};
 
 if(!canEdit(val)){
 return alert("Locked data - approval required");
 }
 
-db.ref(path+"/"+id).remove();
+db.ref("data/"+year+"/"+path+"/"+id).remove();
 resetApproval();
 });
 }
