@@ -569,7 +569,7 @@ ${utsavList.map(f=>`<option>${f}</option>`)}
 db.ref("members").once("value",m=>{
 let mem=m.val()||{};
 
-db.ref("utsav").on("value",s=>{
+db.ref("data/"+year+"/utsav").on("value",s=>{
 let data=s.val()||{};
 
 list.innerHTML=Object.entries(mem).map(([id,v])=>{
@@ -587,14 +587,14 @@ ${v.name}
 }
 
 function saveU(k,v){
-db.ref("utsav/"+k).once("value",snap=>{
+db.ref("data/"+year+"/utsav/"+k).once("value",snap=>{
 let val=snap.val()||{};
 
 if(!canEdit(val)){
 return alert("Locked data - approval required");
 }
 
-db.ref("utsav/"+k).update({
+db.ref("data/"+year+"/utsav/"+k).update({
 a:+v
 });
 
