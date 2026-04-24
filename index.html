@@ -291,6 +291,21 @@ databaseURL:"https://samiti-app5-default-rtdb.asia-southeast1.firebasedatabase.a
 });
 
 db=firebase.database();
+  
+  /* 🔥 ADD THIS (year update) */
+updateYear();
+
+/* 🔥 AUTO YEAR CHANGE */
+setInterval(()=>{
+let current = new Date().getFullYear();
+
+if(current != year){
+year = current;
+page("dashboard");
+}
+
+},60000);
+  
   // 🔥 LOADER HIDE AFTER DATA LOAD
 db.ref().once("value",()=>{
 document.getElementById("loader").style.display="none";
