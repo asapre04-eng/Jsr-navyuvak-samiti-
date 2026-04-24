@@ -338,6 +338,8 @@ db.ref("data/"+year+"/"+path+"/"+k+"/locked").set(false);
 }
 });
 });
+});
+
 }
 
 // 🔄 RESET APPROVAL
@@ -715,7 +717,8 @@ Object.keys(s.val()||{}).forEach(k=>{
 db.ref("data/"+year+"/"+p+"/"+k+"/locked").set(true);
 });
 });
-
+});
+  
 alert("Locked");
 }
 
