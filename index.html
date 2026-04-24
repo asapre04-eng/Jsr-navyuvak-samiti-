@@ -625,7 +625,7 @@ app.innerHTML=`
 <ul id="list"></ul>
 `;
 
-db.ref("income").on("value",s=>{
+db.ref("data/"+year+"/income").on("value",s=>{
 list.innerHTML=Object.entries(s.val()||{}).map(([k,v])=>
 `<li>${v.d} ₹${v.a}
 <button onclick="del('${k}','income')">❌</button>
@@ -635,7 +635,7 @@ list.innerHTML=Object.entries(s.val()||{}).map(([k,v])=>
 }
 
 function addInc(){
-db.ref("income").push({d:d.value,a:+a.value,locked:false});
+db.ref("data/"+year+"/income").push({d:d.value,a:+a.value,locked:false});
 }
 
 // EXPENSE
@@ -646,7 +646,7 @@ app.innerHTML=`
 <ul id="list"></ul>
 `;
 
-db.ref("expense").on("value",s=>{
+db.ref("data/"+year+"/expense").on("value",s=>{
 list.innerHTML=Object.entries(s.val()||{}).map(([k,v])=>
 `<li>${v.d} ₹${v.a}
 <button onclick="del('${k}','expense')">❌</button>
@@ -656,7 +656,7 @@ list.innerHTML=Object.entries(s.val()||{}).map(([k,v])=>
 }
 
 function addExp(){
-db.ref("expense").push({d:d.value,a:+a.value,locked:false});
+db.ref("data/"+year+"/expense").push({d:d.value,a:+a.value,locked:false});
 }
 
 // SETTINGS
