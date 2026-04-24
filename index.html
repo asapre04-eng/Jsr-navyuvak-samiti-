@@ -331,16 +331,14 @@ page("dashboard");
 function fixOldData(){
 
 ["income","expense","monthly","utsav"].forEach(path=>{
-db.ref(path).once("value",snap=>{
+db.ref("data/"+year+"/"+path).once("value",snap=>{
 let data=snap.val()||{};
 Object.keys(data).forEach(k=>{
 if(data[k].locked===undefined){
-db.ref(path+"/"+k+"/locked").set(false);
+db.ref("data/"+year+"/"+path+"/"+k+"/locked").set(false);
 }
 });
 });
-});
-
 }
 
 // 🔄 RESET APPROVAL
@@ -389,7 +387,7 @@ return day>1?(day-1)*10:0;
 function dashboard(){
 app.innerHTML="<div class='cards' id='out'></div>";
 
-db.ref().on("value",s=>{
+db.ref("data/"+year).on("value",s=>{
 let d=s.val()||{};
 let sum=o=>Object.values(o||{}).reduce((a,b)=>a+(b.a||0),0);
 
@@ -713,10 +711,9 @@ function lockData(){
 if(role!=="admin") return alert("Admin only");
 
 ["monthly","income","expense","utsav"].forEach(p=>{
-db.ref(p).once("value",s=>{
+db.ref("data/"+year+"/"+p).once("value",s=>{
 Object.keys(s.val()||{}).forEach(k=>{
-db.ref(p+"/"+k+"/locked").set(true);
-});
+db.ref("data/"+year+"/"+p+"/"+k+"/locked").set(true);
 });
 });
 
