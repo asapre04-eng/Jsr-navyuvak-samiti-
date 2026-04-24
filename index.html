@@ -259,6 +259,7 @@ let db;
 let role="viewer";
 let app;
 let isAdmin = false;
+let year = new Date().getFullYear();
   
 let passwords={
 admin:"123",
@@ -277,7 +278,10 @@ const utsavList=[
 "Ganesh Chaturthi",
 "Laxmi Utsav"
 ];
-
+  
+function updateYear(){
+  year = new Date().getFullYear();
+}
 // INIT
 document.addEventListener("DOMContentLoaded",()=>{
 app = document.getElementById("app");
