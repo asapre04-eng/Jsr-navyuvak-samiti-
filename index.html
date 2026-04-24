@@ -514,7 +514,7 @@ loadMonthly();
 function loadMonthly(){
 db.ref("members").once("value",m=>{
 let mem=m.val()||{};
-db.ref("monthly").on("value",s=>{
+db.ref("data/"+year+"/monthly").on("value",s=>{
 let data=s.val()||{};
 let mth=month.value;
 
@@ -541,14 +541,14 @@ Penalty ₹${penalty(val.d)}
 }
 
 function save(k,t,v){
-db.ref("monthly/"+k).once("value",snap=>{
+db.ref("data/"+year+"/monthly/"+k).once("value",snap=>{
 let val=snap.val()||{};
 
 if(!canEdit(val)){
 return alert("Locked data - approval required");
 }
 
-db.ref("monthly/"+k).update({
+db.ref("data/"+year+"/monthly/"+k).update({
 [t]:t==="a"?+v:v
 });
 
