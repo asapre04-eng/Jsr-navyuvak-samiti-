@@ -270,7 +270,9 @@ databaseURL:"https://samiti-app5-default-rtdb.asia-southeast1.firebasedatabase.a
 });
 
 db=firebase.database();
-  
+ setTimeout(()=>{
+migrateOldData();
+},2000); 
   /* 🔥 ADD THIS (year update) */
 updateYear();
 
@@ -324,19 +326,29 @@ db.ref("data/"+year+"/"+path+"/"+k+"/locked").set(false);
 }
 
 function migrateOldData(){
+function migrateOldData(){
 
 const paths = ["monthly","income","expense","utsav"];
 
 paths.forEach(p=>{
 db.ref(p).once("value",snap=>{
 let data = snap.val();
-if(data){
-db.ref("data/"+year+"/"+p).set(data);
+
+if(data && Object.keys(data).length > 0){
+
+/* 🔥 merge instead of overwrite */
+db.ref("data/"+year+"/"+p).update(data);
+
+console.log(p + " migrated");
+
+}else{
+console.log(p + " empty");
 }
+
 });
 });
 
-alert("Data migrated to year: " + year);
+alert("Migration Done");
 
 }
 // 🔄 RESET APPROVAL
