@@ -1,12 +1,24 @@
+const CACHE = "samiti-v1";
+
 self.addEventListener("install", e => {
-  console.log("Service Worker Installed");
+  e.waitUntil(
+    caches.open(CACHE).then(cache => {
+      return cache.addAll([
+        "/",
+        "/index.html",
+        "/manifest.json",
+        "/icon-192.png",
+        "/icon-512.png"
+      ]);
+    })
+  );
   self.skipWaiting();
 });
 
-self.addEventListener("activate", e => {
-  console.log("Service Worker Activated");
-});
-
 self.addEventListener("fetch", e => {
-  // pass-through
+  e.respondWith(
+    caches.match(e.request).then(res => {
+      return res || fetch(e.request);
+    })
+  );
 });
