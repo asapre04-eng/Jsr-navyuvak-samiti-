@@ -1,4 +1,4 @@
-const CACHE = "samiti-v2";
+const CACHE = "samiti-v3";
 
 self.addEventListener("install", e => {
   e.waitUntil(
