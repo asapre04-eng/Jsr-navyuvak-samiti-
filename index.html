@@ -397,6 +397,7 @@ function dashboard(){
 app.innerHTML = `
 <div class="title">
 📊 Dashboard 
+
 <select id="yearSelect" onchange="changeYear()"></select>
 
 <button onclick="downloadPDF()">📄 PDF</button>
@@ -408,9 +409,8 @@ app.innerHTML = `
 `;
 
 loadYears();      
-loadDashboard();  
 
-}
+// 🔥 IMPORTANT: yahi hona chahiye
 db.ref("data/"+year).on("value",s=>{
 let d=s.val()||{};
 let sum=o=>Object.values(o||{}).reduce((a,b)=>a+(b.a||0),0);
@@ -435,7 +435,9 @@ out.innerHTML=`
 <div class='card'>🏦 Balance<br><div class='big'>₹${open+monthly+pen+utsav+income-expense}</div></div>
 `;
 });
+
 }
+
 
 
 // MEMBERS
