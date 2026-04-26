@@ -663,6 +663,38 @@ list.innerHTML=Object.entries(s.val()||{}).map(([k,v])=>
 function addExp(){
 db.ref("data/"+year+"/expense").push({d:d.value,a:+a.value,locked:false});
 }
+  
+async function downloadPDF(){
+
+const { jsPDF } = window.jspdf;
+let doc = new jsPDF();
+
+db.ref("data/"+year).once("value",snap=>{
+let d = snap.val()||{};
+
+let sum=o=>Object.values(o||{}).reduce((a,b)=>a+(b.a||0),0);
+
+let monthly=sum(d.monthly);
+let utsav=sum(d.utsav);
+let income=sum(d.income);
+let expense=sum(d.expense);
+
+let balance = monthly + utsav + income - expense;
+
+doc.text("JAI SHREE RAM SAMITI", 20, 20);
+doc.text("Year: "+year, 20, 30);
+
+doc.text("Monthly: "+monthly, 20, 50);
+doc.text("Utsav: "+utsav, 20, 60);
+doc.text("Income: "+income, 20, 70);
+doc.text("Expense: "+expense, 20, 80);
+doc.text("Balance: "+balance, 20, 90);
+
+doc.save("Samiti_"+year+".pdf");
+
+});
+
+}
 
 // SETTINGS
 function settings(){
