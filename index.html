@@ -438,7 +438,25 @@ out.innerHTML=`
 
 }
 
+function loadYears(){
 
+let select = document.getElementById("yearSelect");
+
+db.ref("data").once("value",snap=>{
+let years = snap.val() || {};
+
+select.innerHTML = Object.keys(years).map(y=>`
+<option ${y==year?"selected":""}>${y}</option>
+`).join("");
+
+});
+
+}
+
+function changeYear(){
+year = document.getElementById("yearSelect").value;
+dashboard();
+}
 
 // MEMBERS
 function members(){
