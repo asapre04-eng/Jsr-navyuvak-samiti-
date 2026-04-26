@@ -272,6 +272,16 @@ databaseURL:"https://samiti-app5-default-rtdb.asia-southeast1.firebasedatabase.a
 
 db=firebase.database();
 
+  db.ref("data/"+year).once("value",snap=>{
+if(!snap.exists()){
+  db.ref("data/"+year).set({
+    monthly:{},
+    utsav:{},
+    income:{},
+    expense:{}
+  });
+}
+});
   /* 🔥 ADD THIS (year update) */
 updateYear();
 
@@ -443,9 +453,22 @@ function loadYears(){
 let select = document.getElementById("yearSelect");
 
 db.ref("data").once("value",snap=>{
-let years = snap.val() || {};
+let years = snap.val();
 
-select.innerHTML = Object.keys(years).map(y=>`
+if(!years){
+  // 🔥 agar kuch bhi data nahi hai
+  select.innerHTML = `<option>${year}</option>`;
+  return;
+}
+
+let keys = Object.keys(years);
+
+// 🔥 current year add karo agar missing hai
+if(!keys.includes(String(year))){
+  keys.push(String(year));
+}
+
+select.innerHTML = keys.map(y=>`
 <option ${y==year?"selected":""}>${y}</option>
 `).join("");
 
