@@ -742,6 +742,24 @@ Member: ${approvals.member?"✔":"❌"}
 `;
 }
 
+function backupData(){
+
+db.ref("data/"+year).once("value",snap=>{
+let data = snap.val();
+
+let blob = new Blob([JSON.stringify(data,null,2)], {
+type:"application/json"
+});
+
+let a = document.createElement("a");
+a.href = URL.createObjectURL(blob);
+a.download = "backup_"+year+".json";
+a.click();
+
+});
+
+}
+  
 function login(){
 let r=roleSelect.value;
 
