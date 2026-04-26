@@ -872,6 +872,10 @@ if(p==="expense") expense();
 if(p==="settings") settings();
 
 }
+
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/sw.js');
+}
 </script>
 
 </body>
