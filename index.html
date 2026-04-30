@@ -602,19 +602,25 @@ ${months.map(m=>`<option>${m}</option>`)}
 </select>
 <div id="list"></div>
 `;
+
 loadMonthly();
 }
 
 function loadMonthly(){
-db.ref("members").once("value",m=>{
-let mem=m.val()||{};
-db.ref("data/"+year+"/monthly").on("value",s=>{
-let data=s.val()||{};
-let mth=month.value;
 
-list.innerHTML = Object.entries(mem).map(([id,v],i)=>{
-let key = id+"_"+mth;
-let val = data[key]||{};
+const listEl = document.getElementById("list");
+const monthEl = document.getElementById("month");
+
+db.ref("members").once("value",m=>{
+let mem = m.val() || {};
+
+db.ref("data/"+year+"/monthly").on("value",s=>{
+let data = s.val() || {};
+let mth = monthEl.value;
+
+listEl.innerHTML = Object.entries(mem).map(([id,v],i)=>{
+let key = id + "_" + mth;
+let val = data[key] || {};
 
 return `
 <div>
@@ -630,10 +636,11 @@ Penalty ₹${penalty(val.d)}
 </div>
 `;
 }).join("");
+
 });
+
 });
 }
-
 function save(k,t,v){
 db.ref("data/"+year+"/monthly/"+k).once("value",snap=>{
 let val=snap.val()||{};
