@@ -680,7 +680,23 @@ ${v.name}
 }).join("");
 
 });
-});
+  
+festivalEl.onchange = () => {
+  db.ref("data/"+year+"/utsav").once("value",s=>{
+    let data = s.val()||{};
+
+    listEl.innerHTML = Object.entries(mem).map(([id,v])=>{
+      let key = id + "_" + festivalEl.value;
+      let val = data[key]||{};
+
+      return `
+      <div>
+      ${v.name}
+      <input value="${val.a||""}" onchange="saveU('${key}',this.value)">
+      </div>`;
+    }).join("");
+  });
+};
 
 function saveU(k,v){
 db.ref("data/"+year+"/utsav/"+k).once("value",snap=>{
