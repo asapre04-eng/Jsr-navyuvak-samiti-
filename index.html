@@ -652,7 +652,6 @@ resetApproval();
 }
 
 // UTSAV
-function utsav(){
 app.innerHTML=`
 <select id="festival">
 ${utsavList.map(f=>`<option>${f}</option>`)}
@@ -660,15 +659,18 @@ ${utsavList.map(f=>`<option>${f}</option>`)}
 <div id="list"></div>
 `;
 
+const listEl = document.getElementById("list");
+const festivalEl = document.getElementById("festival");
+
 db.ref("members").once("value",m=>{
 let mem=m.val()||{};
 
 db.ref("data/"+year+"/utsav").on("value",s=>{
 let data=s.val()||{};
 
-list.innerHTML=Object.entries(mem).map(([id,v])=>{
-let key=id+"_"+festival.value;
-let val=data[key]||{};
+listEl.innerHTML = Object.entries(mem).map(([id,v])=>{
+let key = id + "_" + festivalEl.value;
+let val = data[key]||{};
 
 return `
 <div>
@@ -676,9 +678,9 @@ ${v.name}
 <input value="${val.a||""}" onchange="saveU('${key}',this.value)">
 </div>`;
 }).join("");
+
 });
 });
-}
 
 function saveU(k,v){
 db.ref("data/"+year+"/utsav/"+k).once("value",snap=>{
