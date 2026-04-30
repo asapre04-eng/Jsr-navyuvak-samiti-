@@ -425,7 +425,39 @@ if(!d)return 0;
 let day=new Date(d).getDate();
 return day>1?(day-1)*10:0;
 }
+  
+function startApp(){
 
+  db.ref("data/"+year).once("value",snap=>{
+    if(!snap.exists()){
+      db.ref("data/"+year).set({
+        monthly:{},
+        utsav:{},
+        income:{},
+        expense:{}
+      });
+    }
+  });
+
+  // loader hide
+  db.ref().once("value",()=>{
+    document.getElementById("loader").style.display="none";
+  });
+
+  // load passwords
+  db.ref("settings/passwords").once("value",s=>{
+    if(s.val()) passwords=s.val();
+  });
+
+  // approvals
+  db.ref("settings/approvals").on("value",s=>{
+    approvals=s.val()||approvals;
+  });
+
+  fixOldData();
+  dashboard();
+
+}
 // DASHBOARD
 function dashboard(){
 
