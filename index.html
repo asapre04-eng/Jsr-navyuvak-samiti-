@@ -474,7 +474,9 @@ document.getElementById("out").innerHTML = `
 <div class='card'>📤 Expense<br><div class='big'>₹${expense}</div></div>
 <div class='card'>🏦 Balance<br><div class='big'>₹${open+monthly+pen+utsav+income-expense}</div></div>
 `;
+});
 
+  }
 function loadYears(){
 
 let select = document.getElementById("yearSelect");
@@ -697,22 +699,6 @@ festivalEl.onchange = render;
 
 }
   
-festivalEl.onchange = () => {
-  db.ref("data/"+year+"/utsav").once("value",s=>{
-    let data = s.val()||{};
-
-    listEl.innerHTML = Object.entries(mem).map(([id,v])=>{
-      let key = id + "_" + festivalEl.value;
-      let val = data[key]||{};
-
-      return `
-      <div>
-      ${v.name}
-      <input value="${val.a||""}" onchange="saveU('${key}',this.value)">
-      </div>`;
-    }).join("");
-  });
-};
 
 function saveU(k,v){
 db.ref("data/"+year+"/utsav/"+k).once("value",snap=>{
