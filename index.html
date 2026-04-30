@@ -624,20 +624,32 @@ Penalty ₹${penalty(val.d)}
 }
 
 function save(k,t,v){
+
 db.ref("data/"+year+"/monthly/"+k).once("value",snap=>{
-let val=snap.val()||{};
-  
-// 🔥 empty → unlock
-if(!v){
-  db.ref("data/"+year+"/utsav/"+k).set({
+let val = snap.val() || {};
+
+// 🔥 अगर empty हो रहा है → unlock
+if((t==="a" && !v) && !val.d){
+  db.ref("data/"+year+"/monthly/"+k).set({
     a:"",
+    d:"",
     locked:false
   });
   return;
 }
-  
+
+if((t==="d" && !v) && !val.a){
+  db.ref("data/"+year+"/monthly/"+k).set({
+    a:"",
+    d:"",
+    locked:false
+  });
+  return;
+}
+
+// normal edit check
 if(!canEdit(val)){
-return alert("Locked data - approval required");
+  return alert("Locked data - approval required");
 }
 
 db.ref("data/"+year+"/monthly/"+k).update({
@@ -648,7 +660,6 @@ resetApproval();
 
 });
 }
-
 // UTSAV
 function utsav(){
 app.innerHTML=`
