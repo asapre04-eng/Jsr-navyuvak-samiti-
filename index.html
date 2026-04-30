@@ -12,6 +12,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
   
 <style>
 body{
@@ -284,6 +285,13 @@ databaseURL:"https://samiti-app5-default-rtdb.asia-southeast1.firebasedatabase.a
 
 db=firebase.database();
 
+  firebase.auth().signInAnonymously()
+.then(()=>{
+  console.log("Firebase Auth OK");
+})
+.catch(err=>{
+  console.log("Auth error", err);
+});
   db.ref("data/"+year).once("value",snap=>{
 if(!snap.exists()){
   db.ref("data/"+year).set({
@@ -713,7 +721,17 @@ list.innerHTML=Object.entries(s.val()||{}).map(([k,v])=>
 }
 
 function addInc(){
-db.ref("data/"+year+"/income").push({d:d.value,a:+a.value,locked:false});
+
+if(role !== "admin"){
+  return alert("Only admin allowed");
+}
+
+db.ref("data/"+year+"/income").push({
+  d:d.value,
+  a:+a.value,
+  locked:false
+});
+
 }
 
 // EXPENSE
@@ -734,7 +752,17 @@ list.innerHTML=Object.entries(s.val()||{}).map(([k,v])=>
 }
 
 function addExp(){
-db.ref("data/"+year+"/expense").push({d:d.value,a:+a.value,locked:false});
+
+if(role !== "admin"){
+  return alert("Only admin allowed");
+}
+
+db.ref("data/"+year+"/expense").push({
+  d:d.value,
+  a:+a.value,
+  locked:false
+});
+
 }
   
 async function downloadPDF(){
