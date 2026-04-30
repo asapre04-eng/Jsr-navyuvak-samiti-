@@ -285,6 +285,19 @@ databaseURL:"https://samiti-app5-default-rtdb.asia-southeast1.firebasedatabase.a
 
 db=firebase.database();
 
+  updateYear();
+
+/* AUTO YEAR CHANGE */
+setInterval(()=>{
+  let current = new Date().getFullYear();
+
+  if(current != year){
+    year = current;
+    page({target:document.querySelector('.tabs div')}, "dashboard");
+  }
+
+},60000);
+  
   firebase.auth().onAuthStateChanged(user => {
 
   if(user){
@@ -883,20 +896,21 @@ alert("Approved");
 // ROUTE
 function page(e,p){
 
-document.querySelectorAll('.tabs div').forEach(el=>el.classList.remove('active'));
+  document.querySelectorAll('.tabs div').forEach(el=>el.classList.remove('active'));
 
-e.target.classList.add('active');
+  if(e && e.target){
+    e.target.classList.add('active');
+  }
 
-if(p==="dashboard") dashboard();
-if(p==="members") members();
-if(p==="monthly") monthly();
-if(p==="utsav") utsav();
-if(p==="income") income();
-if(p==="expense") expense();
-if(p==="settings") settings();
+  if(p==="dashboard") dashboard();
+  if(p==="members") members();
+  if(p==="monthly") monthly();
+  if(p==="utsav") utsav();
+  if(p==="income") income();
+  if(p==="expense") expense();
+  if(p==="settings") settings();
 
 }
-
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('/sw.js')
