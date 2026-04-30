@@ -525,8 +525,12 @@ app.innerHTML=`
 
 const listEl = document.getElementById("list");
 
+// 🔥 remove old listener
+db.ref("members").off();
+
 db.ref("members").on("value",s=>{
 let data=s.val()||{};
+
 
 listEl.innerHTML = Object.entries(data).map(([k,v],i)=>`
 <li>
