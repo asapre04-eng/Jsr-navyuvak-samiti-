@@ -512,7 +512,8 @@ dashboard();
 
 // MEMBERS
 function members(){
-  
+function members(){
+
 app.innerHTML=`
 <h3>Add Member</h3>
 <input id="name" placeholder="Member Name">
@@ -543,8 +544,10 @@ onchange="updateMember('${k}','post',this.value)">
 `).join("");
 
 });
+
+}
 function addMember(){
-  
+
 if(role !== "admin"){
 return alert("Only admin can add member");
 }
@@ -562,12 +565,9 @@ name:n,
 post:p
 });
 
-/* 🔥 only name clear */
 nameInput.value = "";
 nameInput.focus();
-/* ❌ post ko mat chhedo */
 }
-
 
 function updateMember(id,field,value){
 
@@ -580,7 +580,7 @@ db.ref("members/"+id).update({
 });
 
 }
-  
+
 function deleteMember(id){
 
 if(role!=="admin"){
@@ -591,7 +591,7 @@ if(!confirm("Delete member?")) return;
 
 db.ref("members/"+id).remove();
 
-  }
+}
 
 // MONTHLY
 function monthly(){
