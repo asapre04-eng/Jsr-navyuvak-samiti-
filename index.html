@@ -410,10 +410,9 @@ function startApp(){
   });
 
   // loader hide
-  // 🔥 3 sec me loader hata do (fail-safe)
-setTimeout(()=>{
-  document.getElementById("loader").style.display="none";
-},3000);
+db.ref().once("value",()=>{
+document.getElementById("loader").style.display="none";
+});
 
   // load passwords
   db.ref("settings/passwords").once("value",s=>{
@@ -599,7 +598,6 @@ db.ref("members/"+id).remove();
 }
 
 // MONTHLY
-function monthly(){
 function monthly(){
 
 app.innerHTML=`
