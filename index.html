@@ -451,7 +451,6 @@ app.innerHTML = `
 loadYears();      
 
 // 🔥 IMPORTANT: yahi hona chahiye
-db.ref("data/"+year).on("value",s=>{
 db.ref("data/"+year).off();
 
 db.ref("data/"+year).on("value",s=>{
@@ -477,7 +476,6 @@ document.getElementById("out").innerHTML = `
 <div class='card'>📤 Expense<br><div class='big'>₹${expense}</div></div>
 <div class='card'>🏦 Balance<br><div class='big'>₹${open+monthly+pen+utsav+income-expense}</div></div>
 `;
-
 });
 }
 function loadYears(){
