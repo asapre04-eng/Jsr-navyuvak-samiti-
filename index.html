@@ -465,7 +465,7 @@ Object.values(d.monthly||{}).forEach(v=>pen+=penalty(v.d));
 
 let open=d.settings?.open||0;
   
-document.getElementById("out").innerHTML = `...`;
+document.getElementById("out").innerHTML = `
 <div class='card'>💰 Opening<br><div class='big'>₹${open}</div></div>
 <div class='card'>🗓️ Monthly<br><div class='big'>₹${monthly}</div></div>
 <div class='card'>🧾 Penalty<br><div class='big'>₹${pen}</div></div>
@@ -474,9 +474,6 @@ document.getElementById("out").innerHTML = `...`;
 <div class='card'>📤 Expense<br><div class='big'>₹${expense}</div></div>
 <div class='card'>🏦 Balance<br><div class='big'>₹${open+monthly+pen+utsav+income-expense}</div></div>
 `;
-});
-
-}
 
 function loadYears(){
 
@@ -659,6 +656,8 @@ resetApproval();
 }
 
 // UTSAV
+function utsav(){
+
 app.innerHTML=`
 <select id="festival">
 ${utsavList.map(f=>`<option>${f}</option>`)}
@@ -670,11 +669,14 @@ const listEl = document.getElementById("list");
 const festivalEl = document.getElementById("festival");
 
 db.ref("members").once("value",m=>{
-let mem=m.val()||{};
+let mem = m.val()||{};
 
 db.ref("data/"+year+"/utsav").on("value",s=>{
-let data=s.val()||{};
+let data = s.val()||{};
 
+render();
+
+function render(){
 listEl.innerHTML = Object.entries(mem).map(([id,v])=>{
 let key = id + "_" + festivalEl.value;
 let val = data[key]||{};
@@ -685,8 +687,15 @@ ${v.name}
 <input value="${val.a||""}" onchange="saveU('${key}',this.value)">
 </div>`;
 }).join("");
+}
+
+festivalEl.onchange = render;
 
 });
+
+});
+
+}
   
 festivalEl.onchange = () => {
   db.ref("data/"+year+"/utsav").once("value",s=>{
@@ -771,7 +780,6 @@ db.ref("data/"+year+"/income").push({
 }
 
 // EXPENSE
-function expense(){
 function expense(){
 app.innerHTML=`
 <input id="d" placeholder="Description"><input id="a">
