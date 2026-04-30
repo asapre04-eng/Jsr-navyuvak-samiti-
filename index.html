@@ -713,7 +713,26 @@ list.innerHTML=Object.entries(s.val()||{}).map(([k,v])=>
 }
 
 function addInc(){
-db.ref("data/"+year+"/income").push({d:d.value,a:+a.value,locked:false});
+
+if(role !== "admin"){
+  return alert("❌ Only admin allowed");
+}
+
+const desc = document.getElementById("d").value;
+const amt  = document.getElementById("a").value;
+
+if(!desc || !amt){
+  return alert("Fill all fields");
+}
+
+db.ref("data/"+year+"/income").push({
+  d: desc,
+  a: +amt,
+  locked:false
+});
+
+document.getElementById("d").value="";
+document.getElementById("a").value="";
 }
 
 // EXPENSE
@@ -734,7 +753,26 @@ list.innerHTML=Object.entries(s.val()||{}).map(([k,v])=>
 }
 
 function addExp(){
-db.ref("data/"+year+"/expense").push({d:d.value,a:+a.value,locked:false});
+
+if(role !== "admin"){
+  return alert("❌ Only admin allowed");
+}
+
+const desc = document.getElementById("d").value;
+const amt  = document.getElementById("a").value;
+
+if(!desc || !amt){
+  return alert("Fill all fields");
+}
+
+db.ref("data/"+year+"/expense").push({
+  d: desc,
+  a: +amt,
+  locked:false
+});
+
+document.getElementById("d").value="";
+document.getElementById("a").value="";
 }
   
 async function downloadPDF(){
