@@ -285,12 +285,17 @@ databaseURL:"https://samiti-app5-default-rtdb.asia-southeast1.firebasedatabase.a
 
 db=firebase.database();
 
-  firebase.auth().signInAnonymously()
-.then(()=>{
-  console.log("Firebase Auth OK");
-})
-.catch(err=>{
-  console.log("Auth error", err);
+  firebase.auth().onAuthStateChanged(user => {
+
+  if(user){
+    console.log("Auth Ready");
+
+    startApp();   // 🔥 अब app चलेगा
+
+  } else {
+    firebase.auth().signInAnonymously();
+  }
+
 });
   db.ref("data/"+year).once("value",snap=>{
 if(!snap.exists()){
