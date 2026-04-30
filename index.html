@@ -513,7 +513,7 @@ dashboard();
 
 // MEMBERS
 function members(){
-
+  
 app.innerHTML=`
 <h3>Add Member</h3>
 <input id="name" placeholder="Member Name">
@@ -524,10 +524,12 @@ app.innerHTML=`
 <ul id="list"></ul>
 `;
 
+const listEl = document.getElementById("list");
+
 db.ref("members").on("value",s=>{
 let data=s.val()||{};
 
-list.innerHTML = Object.entries(data).map(([k,v],i)=>`
+listEl.innerHTML = Object.entries(data).map(([k,v],i)=>`
 <li>
 <b>${i+1}.</b>
 
@@ -542,8 +544,6 @@ onchange="updateMember('${k}','post',this.value)">
 `).join("");
 
 });
-
-}
 function addMember(){
   
 if(role !== "admin"){
