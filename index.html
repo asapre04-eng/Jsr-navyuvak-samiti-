@@ -410,9 +410,20 @@ function startApp(){
   });
 
   // loader hide
+let loaded = false;
+
+// 🔥 real data load
 db.ref().once("value",()=>{
-document.getElementById("loader").style.display="none";
+  loaded = true;
+  document.getElementById("loader").style.display="none";
 });
+
+// 🔥 fail-safe (max 4 sec)
+setTimeout(()=>{
+  if(!loaded){
+    document.getElementById("loader").style.display="none";
+  }
+},4000);
 
   // load passwords
   db.ref("settings/passwords").once("value",s=>{
@@ -420,9 +431,11 @@ document.getElementById("loader").style.display="none";
   });
 
   // approvals
-  db.ref("settings/approvals").on("value",s=>{
-    approvals=s.val()||approvals;
-  });
+  db.ref("settings/approvals").off();
+
+db.ref("settings/approvals").on("value",s=>{
+  approvals=s.val()||approvals;
+});
 
   fixOldData();
   dashboard();
