@@ -297,51 +297,7 @@ db=firebase.database();
   }
 
 });
-  db.ref("data/"+year).once("value",snap=>{
-if(!snap.exists()){
-  db.ref("data/"+year).set({
-    monthly:{},
-    utsav:{},
-    income:{},
-    expense:{}
-  });
-}
-});
-  /* 🔥 ADD THIS (year update) */
-updateYear();
-
-/* 🔥 AUTO YEAR CHANGE */
-setInterval(()=>{
-let current = new Date().getFullYear();
-
-if(current != year){
-year = current;
-page("dashboard");
-}
-
-},60000);
   
-  // 🔥 LOADER HIDE AFTER DATA LOAD
-db.ref().once("value",()=>{
-document.getElementById("loader").style.display="none";
-});
-
-// load passwords
-db.ref("settings/passwords").once("value",s=>{
-if(s.val()) passwords=s.val();
-});
-
-// load approvals
-db.ref("settings/approvals").on("value",s=>{
-approvals=s.val()||approvals;
-});
-
-// 🔥 AUTO FIX OLD DATA
-fixOldData();
-
-dashboard();
-
-});
 
 // 🔧 AUTO DATA FIX
 function fixOldData(){
