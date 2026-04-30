@@ -383,6 +383,11 @@ member:false
 // 🔒 EDIT CONTROL
 function canEdit(v){
 
+// 🔥 अगर data ही empty है → हमेशा editable
+if(!v || (!v.a && !v.d)){
+  return true;
+}
+
 // सिर्फ admin edit करेगा
 if(!isAdmin) return false;
 
@@ -621,7 +626,16 @@ Penalty ₹${penalty(val.d)}
 function save(k,t,v){
 db.ref("data/"+year+"/monthly/"+k).once("value",snap=>{
 let val=snap.val()||{};
-
+  
+// 🔥 empty → unlock
+if(!v){
+  db.ref("data/"+year+"/utsav/"+k).set({
+    a:"",
+    locked:false
+  });
+  return;
+}
+  
 if(!canEdit(val)){
 return alert("Locked data - approval required");
 }
@@ -667,6 +681,15 @@ ${v.name}
 function saveU(k,v){
 db.ref("data/"+year+"/utsav/"+k).once("value",snap=>{
 let val=snap.val()||{};
+
+  // 🔥 empty → unlock
+if(!v){
+  db.ref("data/"+year+"/utsav/"+k).set({
+    a:"",
+    locked:false
+  });
+  return;
+}
 
 if(!canEdit(val)){
 return alert("Locked data - approval required");
