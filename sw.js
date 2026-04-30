@@ -1,28 +1,28 @@
-const CACHE = "samiti-v3";
+const CACHE_NAME = "samiti-v2"; // 🔥 version change करते रहना
 
-self.addEventListener("install", e => {
-  e.waitUntil(
-    caches.open(CACHE).then(cache => {
-      return cache.addAll([
-        "/",
-        "/index.html",
-        "/manifest.json",
-        "/icons/icon-192.png",
-        "/icons/icon-512.png"
-      ]);
-    })
-  );
-  self.skipWaiting();
+// install
+self.addEventListener("install", event => {
+  self.skipWaiting(); // 🔥 तुरंत नया version activate
 });
 
-self.addEventListener("activate", e => {
-  e.waitUntil(self.clients.claim());
-});
-
-self.addEventListener("fetch", e => {
-  e.respondWith(
-    caches.match(e.request).then(res => {
-      return res || fetch(e.request);
+// activate
+self.addEventListener("activate", event => {
+  event.waitUntil(
+    caches.keys().then(keys => {
+      return Promise.all(
+        keys.map(key => {
+          if (key !== CACHE_NAME) {
+            return caches.delete(key); // 🔥 old cache delete
+          }
+        })
+      );
     })
   );
+
+  self.clients.claim(); // 🔥 तुरंत control
+});
+
+// fetch (NO CACHE → हमेशा fresh code)
+self.addEventListener("fetch", event => {
+  event.respondWith(fetch(event.request));
 });
