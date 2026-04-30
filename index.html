@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -409,9 +410,10 @@ function startApp(){
   });
 
   // loader hide
-  db.ref().once("value",()=>{
-    document.getElementById("loader").style.display="none";
-  });
+  // 🔥 3 sec me loader hata do (fail-safe)
+setTimeout(()=>{
+  document.getElementById("loader").style.display="none";
+},3000);
 
   // load passwords
   db.ref("settings/passwords").once("value",s=>{
