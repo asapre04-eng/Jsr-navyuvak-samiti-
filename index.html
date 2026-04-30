@@ -624,7 +624,11 @@ Penalty ₹${penalty(val.d)}
 }
 
 function save(k,t,v){
-
+// 🔒 ADMIN CHECK (सबसे ऊपर)
+if(role !== "admin"){
+  return alert("Only admin can edit");
+}
+  
 db.ref("data/"+year+"/monthly/"+k).once("value",snap=>{
 let val = snap.val() || {};
 
@@ -690,6 +694,10 @@ ${v.name}
 }
 
 function saveU(k,v){
+  // 🔒 ADMIN CHECK
+if(role !== "admin"){
+  return alert("Only admin can edit");
+}
 db.ref("data/"+year+"/utsav/"+k).once("value",snap=>{
 let val=snap.val()||{};
 
