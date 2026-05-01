@@ -965,7 +965,7 @@ async function downloadPDF(){
 
   doc.autoTable({
     startY: y,
-    head: [["Income Source","Amount"]],
+    head: [["Income","Amount"]],
     body: incomeRows,
     styles:{fontSize:9, cellPadding:6},
     headStyles:{fillColor:[0,150,0]},
@@ -1006,7 +1006,7 @@ async function downloadPDF(){
   }
 
   signBox(20, "Adhyaksha Signature");
-  signBox(220, "Treasurer Signature");
+  signBox(220, "Sachiv Signature");
   signBox(420, "Date");
 
   // Ensure header/footer on first page too
