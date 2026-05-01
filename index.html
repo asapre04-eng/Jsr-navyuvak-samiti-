@@ -828,12 +828,12 @@ document.getElementById("a").value="";
 
   // 🔥 LOGO
   const img = new Image();
-img src="https://i.ibb.co/YTf4TCcj/icon-512.png";
+img.src = "https://i.ibb.co/YTf4TCcj/icon-512.png";
+img.crossOrigin = "anonymous";
 
-img.onload = function () {
-  doc.addImage(img, "PNG", 40, 20, 80, 80);
-  doc.save("report.pdf");
-};
+await new Promise(resolve => {
+  img.onload = resolve;
+});
   // ---------- HELPERS ----------
   const currency = n => `₹${(+n||0).toLocaleString("en-IN")}`;
   const todayStr = new Date().toLocaleDateString();
