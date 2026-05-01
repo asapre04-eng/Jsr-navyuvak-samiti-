@@ -819,35 +819,202 @@ document.getElementById("a").value="";
   
 async function downloadPDF(){
 
-const { jsPDF } = window.jspdf;
-let doc = new jsPDF();
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ unit:"pt", format:"a4" }); // pt gives better layout control
+  const pageW = doc.internal.pageSize.getWidth();
+  const pageH = doc.internal.pageSize.getHeight();
 
-db.ref("data/"+year).once("value",snap=>{
-let d = snap.val()||{};
+  // 👉 OPTIONAL LOGO (base64)
+  const LOGO_BASE64 = null; // "data:image/png;base64,...."  (अगर नहीं है तो null रहने दो)
 
-let sum=o=>Object.values(o||{}).reduce((a,b)=>a+(b.a||0),0);
+  // ---------- HELPERS ----------
+  const currency = (n)=> `₹${(+n||0).toLocaleString("en-IN")}`;
+  const todayStr = new Date().toLocaleDateString();
 
-let monthly=sum(d.monthly);
-let utsav=sum(d.utsav);
-let income=sum(d.income);
-let expense=sum(d.expense);
+  function headerFooter(){
+    // Header band
+    doc.setFillColor(255,111,0);
+    doc.rect(0,0,pageW,64,"F");
 
-let balance = monthly + utsav + income - expense;
+    // Logo
+    if(LOGO_BASE64){
+      doc.addImage(LOGO_BASE64, "PNG", 20, 10, 44, 44);
+    }
 
-doc.text("JAI SHREE RAM SAMITI", 20, 20);
-doc.text("Year: "+year, 20, 30);
+    // Title
+    doc.setTextColor(255,255,255);
+    doc.setFont("helvetica","bold");
+    doc.setFontSize(18);
+    doc.text("JAI SHREE RAM NAVYUVAK SAMITI", pageW/2, 28, {align:"center"});
 
-doc.text("Monthly: "+monthly, 20, 50);
-doc.text("Utsav: "+utsav, 20, 60);
-doc.text("Income: "+income, 20, 70);
-doc.text("Expense: "+expense, 20, 80);
-doc.text("Balance: "+balance, 20, 90);
+    doc.setFont("helvetica","normal");
+    doc.setFontSize(11);
+    doc.text(`Financial Report • ${year}`, pageW/2, 46, {align:"center"});
 
-doc.save("Samiti_"+year+".pdf");
+    // Footer
+    doc.setFontSize(9);
+    doc.setTextColor(100);
+    doc.text(`Generated: ${todayStr}`, 20, pageH-18);
 
-});
+    const pageCount = doc.internal.getNumberOfPages();
+    doc.text(`Page ${doc.internal.getCurrentPageInfo().pageNumber} / ${pageCount}`, pageW-100, pageH-18);
+  }
 
-}
+  // Hook for every page
+  const didDrawPage = ()=> headerFooter();
+
+  // ---------- FETCH ----------
+  const snap = await db.ref("data/"+year).once("value");
+  const d = snap.val()||{};
+
+  const sum = o => Object.values(o||{}).reduce((a,b)=>a+(+b.a||0),0);
+
+  const monthly = sum(d.monthly);
+  const utsav   = sum(d.utsav);
+  const income  = sum(d.income);
+  const expense = sum(d.expense);
+
+  let pen = 0;
+  Object.values(d.monthly||{}).forEach(v=> pen += penalty(v.d));
+
+  const balance = monthly + utsav + income + pen - expense;
+
+  // ---------- KPI CARDS ----------
+  let y = 84;
+
+  function card(x, y, w, h, title, value, color=[255,111,0]){
+    doc.setFillColor(245,245,245);
+    doc.roundedRect(x,y,w,h,8,8,"F");
+
+    // top strip
+    doc.setFillColor(color[0],color[1],color[2]);
+    doc.roundedRect(x,y,w,6,6,6,"F");
+
+    doc.setTextColor(80);
+    doc.setFontSize(10);
+    doc.text(title, x+10, y+22);
+
+    doc.setTextColor(color[0],color[1],color[2]);
+    doc.setFont("helvetica","bold");
+    doc.setFontSize(14);
+    doc.text(currency(value), x+10, y+42);
+
+    doc.setFont("helvetica","normal");
+  }
+
+  const gap = 10;
+  const w = (pageW - 20*2 - gap*2)/3;
+  const h = 56;
+
+  card(20, y, w, h, "Monthly", monthly, [255,111,0]);
+  card(20+w+gap, y, w, h, "Penalty", pen, [255,152,0]);
+  card(20+(w+gap)*2, y, w, h, "Utsav", utsav, [255,111,0]);
+
+  y += h + gap;
+
+  card(20, y, w, h, "Income", income, [0,150,0]);
+  card(20+w+gap, y, w, h, "Expense", expense, [200,0,0]);
+  card(20+(w+gap)*2, y, w, h, "Final Balance", balance, [0,120,0]);
+
+  y += h + 16;
+
+  // ---------- MONTHLY TABLE ----------
+  const monthlyRows = Object.entries(d.monthly||{}).map(([k,v])=>[
+    k,
+    currency(v.a||0),
+    v.d || "-",
+    currency(penalty(v.d))
+  ]);
+
+  doc.autoTable({
+    startY: y,
+    head: [["Member/Month","Amount","Date","Penalty"]],
+    body: monthlyRows,
+    styles:{fontSize:9, cellPadding:6},
+    headStyles:{fillColor:[255,111,0]},
+    alternateRowStyles:{fillColor:[250,250,250]},
+    margin:{left:20, right:20},
+    didDrawPage
+  });
+
+  y = doc.lastAutoTable.finalY + 12;
+
+  // ---------- UTSAV ----------
+  const utsavRows = Object.entries(d.utsav||{}).map(([k,v])=>[
+    k, currency(v.a||0)
+  ]);
+
+  doc.autoTable({
+    startY: y,
+    head: [["Utsav","Amount"]],
+    body: utsavRows,
+    styles:{fontSize:9, cellPadding:6},
+    headStyles:{fillColor:[255,111,0]},
+    alternateRowStyles:{fillColor:[250,250,250]},
+    margin:{left:20, right:20},
+    didDrawPage
+  });
+
+  y = doc.lastAutoTable.finalY + 12;
+
+  // ---------- INCOME ----------
+  const incomeRows = Object.values(d.income||{}).map(v=>[
+    v.d || "-", currency(v.a)
+  ]);
+
+  doc.autoTable({
+    startY: y,
+    head: [["Income Source","Amount"]],
+    body: incomeRows,
+    styles:{fontSize:9, cellPadding:6},
+    headStyles:{fillColor:[0,150,0]},
+    alternateRowStyles:{fillColor:[250,250,250]},
+    margin:{left:20, right:20},
+    didDrawPage
+  });
+
+  y = doc.lastAutoTable.finalY + 12;
+
+  // ---------- EXPENSE ----------
+  const expenseRows = Object.values(d.expense||{}).map(v=>[
+    v.d || "-", currency(v.a)
+  ]);
+
+  doc.autoTable({
+    startY: y,
+    head: [["Expense","Amount"]],
+    body: expenseRows,
+    styles:{fontSize:9, cellPadding:6},
+    headStyles:{fillColor:[200,0,0]},
+    alternateRowStyles:{fillColor:[250,250,250]},
+    margin:{left:20, right:20},
+    didDrawPage
+  });
+
+  y = doc.lastAutoTable.finalY + 20;
+
+  // ---------- SIGNATURE SECTION ----------
+  const sigY = Math.min(y, pageH - 120);
+
+  function signBox(x, title){
+    doc.setDrawColor(180);
+    doc.line(x, sigY, x+160, sigY);
+    doc.setFontSize(10);
+    doc.setTextColor(80);
+    doc.text(title, x, sigY+14);
+  }
+
+  signBox(20, "Adhyaksha Signature");
+  signBox(220, "Treasurer Signature");
+  signBox(420, "Date");
+
+  // Ensure header/footer on first page too
+  doc.setPage(1);
+  headerFooter();
+
+  // SAVE
+  doc.save(`Samiti_Ultra_${year}.pdf`);
+    }
 
 // SETTINGS
 function settings(){
