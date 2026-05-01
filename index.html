@@ -1006,7 +1006,7 @@ async function downloadPDF(){
   }
 
   signBox(20, "Adhyaksha Signature");
-  signBox(220, "Treasurer Signature");
+  signBox(220, "Sachiv Signature");
   signBox(420, "Date");
 
   // Ensure header/footer on first page too
@@ -1029,7 +1029,7 @@ app.innerHTML=`
 </select>
 <button onclick="login()">Login</button>
 
-<h3>Password</h3>
+<h3>Change Password</h3>
 <input id="newPass">
 <button onclick="changePass()">Update</button>
 
@@ -1037,6 +1037,7 @@ app.innerHTML=`
 <input id="openAmt" type="number">
 <button onclick="saveOpen()">Save</button>
 
+<h3>Restore data</h3>
 <input type="file" id="restoreFile">
 <button onclick="restoreData()">♻ Restore</button>
 
