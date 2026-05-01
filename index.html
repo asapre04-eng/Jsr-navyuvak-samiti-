@@ -1037,6 +1037,9 @@ app.innerHTML=`
 <input id="openAmt" type="number">
 <button onclick="saveOpen()">Save</button>
 
+<input type="file" id="restoreFile">
+<button onclick="restoreData()">♻ Restore</button>
+
 <h3>Lock / Approval</h3>
 <button onclick="lockData()">🔒 Lock</button>
 <button onclick="approve()">✅ Approve</button>
@@ -1062,6 +1065,39 @@ a.download = "backup_"+year+".json";
 a.click();
 
 });
+
+}
+
+function restoreData(){
+
+if(role !== "admin"){
+return alert("Admin only");
+}
+
+let file = document.getElementById("restoreFile").files[0];
+
+if(!file) return alert("File select karo");
+
+let reader = new FileReader();
+
+reader.onload = function(e){
+
+try{
+
+let data = JSON.parse(e.target.result);
+
+// 🔥 overwrite data
+db.ref("data/"+year).set(data);
+
+alert("✅ Restore complete");
+
+}catch(err){
+alert("❌ Invalid file");
+}
+
+};
+
+reader.readAsText(file);
 
 }
   
