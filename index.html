@@ -666,33 +666,125 @@ resetApproval();
 });
 }
 // UTSAV
-function utsav(){
-app.innerHTML=`
-<select id="festival">
-${utsavList.map(f=>`<option>${f}</option>`)}
-</select>
-<div id="list"></div>
-`;
 
-db.ref("members").once("value",m=>{
-let mem=m.val()||{};
+function utsav() {
+  app.innerHTML = `
+    <h3>🎊 Utsav Collection</h3>
 
-db.ref("data/"+year+"/utsav").on("value",s=>{
-let data=s.val()||{};
+    <select id="festival" onchange="loadUtsav()">
+      ${utsavList.map(f =>
+        `<option value="${f}">${f}</option>`
+      ).join("")}
+    </select>
 
-list.innerHTML=Object.entries(mem).map(([id,v])=>{
-let key=id+"_"+festival.value;
-let val=data[key]||{};
+    <div id="list"></div>
+    <button onclick="saveAllUtsav()">💾 Save All Payments</button>
+  `;
 
-return `
-<div>
-${v.name}
-<input value="${val.a||""}" onchange="saveU('${key}',this.value)">
-</div>`;
-}).join("");
-});
-});
+  loadUtsav();
 }
+
+function loadUtsav() {
+  const festival = document.getElementById("festival").value;
+  const listEl = document.getElementById("list");
+
+  listEl.innerHTML = "Loading...";
+
+  Promise.all([
+    db.ref("members").once("value"),
+    db.ref("data/" + year + "/utsav").once("value")
+  ]).then(([ms, us]) => {
+    const members = ms.val() || {};
+    const data = us.val() || {};
+
+    listEl.innerHTML = Object.entries(members).map(([id, m], i) => {
+      const key = id + "_" + festival;
+      const val = data[key] || {};
+
+      return `
+        <div class="card">
+          <b>${i + 1}. ${m.name || ""}</b>
+          <input
+            type="number"
+            min="0"
+            step="1"
+            class="utsav-amount"
+            data-key="${key}"
+            value="${val.a ?? ""}"
+            placeholder="Payment amount"
+          >
+        </div>
+      `;
+    }).join("");
+
+  }).catch(err => {
+    listEl.innerHTML = "Error: " + err.message;
+  });
+}
+
+async function saveAllUtsav() {
+  if (role !== "admin") {
+    alert("Only admin can save payments");
+    return;
+  }
+
+  const inputs = document.querySelectorAll(".utsav-amount");
+  const updates = {};
+  const ref = db.ref("data/" + year + "/utsav");
+
+  for (const input of inputs) {
+    const key = input.dataset.key;
+    const value = input.value.trim();
+
+    if (value === "") continue;
+
+    const amount = Number(value);
+
+    if (!Number.isFinite(amount) || amount < 0) {
+      alert("Sahi amount enter karo");
+      return;
+    }
+
+    updates[key] = {
+      a: amount,
+      locked: false
+    };
+  }
+
+  if (Object.keys(updates).length === 0) {
+    alert("Pehle payment amount bharo");
+    return;
+  }
+
+  try {
+    const snap = await ref.once("value");
+    const oldData = snap.val() || {};
+
+    for (const key of Object.keys(updates)) {
+      if (!canEdit(oldData[key] || {})) {
+        alert("Locked data - approval required: " + key);
+        return;
+      }
+    }
+
+    const flatUpdates = {};
+
+    for (const [key, value] of Object.entries(updates)) {
+      flatUpdates[key + "/a"] = value.a;
+      flatUpdates[key + "/locked"] = false;
+    }
+
+    await ref.update(flatUpdates);
+    resetApproval();
+
+    alert("✅ Sabhi payments save ho gaye!");
+    loadUtsav();
+
+  } catch (err) {
+    alert("Save failed: " + err.message);
+  }
+}
+
 
 function saveU(k,v){
   // 🔒 ADMIN CHECK
