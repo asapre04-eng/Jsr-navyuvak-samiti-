@@ -166,7 +166,7 @@ function init(){
   // Restore the last successful app role after refresh/browser restart.
   try{
     const savedRole=localStorage.getItem("samitiAppRole");
-    role=["admin","adhyaksha","upadhyaksha","member"].includes(savedRole)?savedRole:"viewer";
+    role=["admin","adhyaksha","upadhyaksha","sachiv"].includes(savedRole)?savedRole:"viewer";
   }catch(e){role="viewer";console.warn("Session restore unavailable:",e)}
   try{
     firebase.initializeApp({
