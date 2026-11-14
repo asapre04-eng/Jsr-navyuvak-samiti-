@@ -123,7 +123,7 @@ let db, app;
 let role = "viewer";
 let year = new Date().getFullYear();
 let passwords = {admin:"123",adhyaksha:"111",upadhyaksha:"222",sachiv:"333"};
-let approvals = {adhyaksha:false,upadhyaksha:false,member:false};
+let approvals = {adhyaksha:false,upadhyaksha:false,sachiv:false};
 let activePage = "dashboard";
 const months = ["Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec","Jan","Feb","Mar"];
 const utsavList = ["Hanuman Janmotsav","Navratri","Ganesh Chaturthi","Laxmi Utsav"];
@@ -729,7 +729,7 @@ async function saveOpen(){if(!isAdmin())return alert("केवल Admin");const
 async function backupData(){try{const s=await db.ref().once("value"),blob=new Blob([JSON.stringify(s.val(),null,2)],{type:"application/json"}),a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="samiti-backup-"+year+".json";a.click();URL.revokeObjectURL(a.href)}catch(e){alert("Backup नहीं हुआ: "+e.message)}}
 async function restoreData(){if(!isAdmin())return alert("केवल Admin");const file=document.getElementById("restoreFile").files[0];if(!file)return alert("पहले फ़ाइल चुनें");if(!confirm("Restore पूरे Firebase data को बदल सकता है। पहले backup लिया है? जारी रखें?"))return;try{const data=JSON.parse(await file.text());if(!data||typeof data!=="object")throw Error("Invalid JSON");await db.ref().set(data);alert("Restore पूरा हुआ");page("dashboard")}catch(e){alert("Restore नहीं हुआ: "+e.message)}}
 async function lockData(){if(!isAdmin())return alert("केवल Admin");if(!confirm("वर्तमान वर्ष के monthly, income, expense और utsav रिकॉर्ड lock करें?"))return;try{for(const p of ["monthly","income","expense","utsav","donations"]){const s=await path(p).once("value"),data=s.val()||{},updates={};Object.keys(data).forEach(k=>updates[k+"/locked"]=true);if(Object.keys(updates).length)await path(p).update(updates)}alert("रिकॉर्ड Lock हो गए");settings()}catch(e){alert(e.message)}}
-async function approve(){if(role==="admin"||role==="viewer")return alert("Approval के लिए Adhyaksha, Upadhyaksha या Member login करें");try{await db.ref("settings/approvals/"+role).set(true);alert("Approval दर्ज हुई");settings()}catch(e){alert(e.message)}}
+async function approve(){if(role==="admin"||role==="viewer")return alert("Approval के लिए Adhyaksha, Upadhyaksha या Sachiv login करें");try{await db.ref("settings/approvals/"+role).set(true);alert("Approval दर्ज हुई");settings()}catch(e){alert(e.message)}}
 async function downloadPDF(){
  let printWin=null;
  try{
