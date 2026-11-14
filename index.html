@@ -415,7 +415,7 @@ async function loadMonthly(){
 }
 async function saveMonthly(key,id){if(!isAdmin())return alert("केवल Admin सेव कर सकता है");const a=document.getElementById("ma_"+id).value,d=document.getElementById("md_"+id).value,mode=document.getElementById("mm_"+id).value;if(a!==""&&(!Number.isFinite(Number(a))||Number(a)<0))return alert("राशि सही भरें");try{const old=(await path("monthly/"+key).once("value")).val()||{};if(!canEdit(old))return alert("Locked record: approval आवश्यक");await path("monthly/"+key).update({a:a===""?"":Number(a),d,mode,locked:false});resetApproval();loadMonthly()}catch(e){alert(e.message)}}
 function canEdit(v){if(!v||((!v.a)&&(!v.d)))return true;if(!isAdmin())return false;if(v.locked===undefined||v.locked===false)return true;return v.locked===true&&approvals.adhyaksha&&approvals.upadhyaksha&&approvals.member}
-function resetApproval(){db.ref("settings/approvals").set({adhyaksha:false,upadhyaksha:false,member:false})}
+function resetApproval(){db.ref("settings/approvals").set({adhyaksha:false,upadhyaksha:false,sachiv:false})}
 function utsav(){
  app.innerHTML=`<h3>🎊 उत्सव रजिस्टर</h3><div id="festivalFolders" class="festival-folders"></div><hr><h3>🧾 सदस्यवार चंदा दर्ज करें</h3><label>उत्सव चुनें</label><select id="festival" onchange="loadUtsav()">${utsavList.map(f=>`<option value="${esc(f)}">${esc(f)}</option>`).join("")}</select><div id="utsavList"></div><button onclick="saveAllUtsav()">💾 सभी भुगतान सेव करें</button>`;
  document.getElementById("festivalFolders").innerHTML=utsavList.map(f=>`<div class="festival-folder" role="button" tabindex="0" onclick="openFestival('${esc(f)}')"><div class="folder-icon">📁</div><h4>${esc(f)}</h4><small>Collection · Income · Expenses</small></div>`).join("");
